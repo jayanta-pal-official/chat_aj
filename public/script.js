@@ -104,7 +104,7 @@ async function handleAnswer(answer) {
 async function startVideo() {
   localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: false,
+    audio: true,
   });
   localVideo.srcObject = localStream;
 }
