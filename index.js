@@ -16,29 +16,40 @@ app.use(express.static(path.join("public")));
 const users = {};
 
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+  console.log("socket connected:", socket.id);
 
-  //   socket.on("join-room", () => {
-  //     users[socket.id] = socket;
-  //     if (Object.keys(users).length === 2) {
-  //       io.emit("ready");
-  //     }
-  //   });
-
-  socket.on("offer", (offer) => {
-    socket.broadcast.emit("offer", offer);
+  socket.on("join-room", (roomId, id, name) => {
+    socket.join(roomId);
+    socket.roomId = roomId;
+    socket.username = name;
+    socket.to(roomId).emit("new-user", id, name);
   });
 
-  socket.on("answer", (answer) => {
-    socket.broadcast.emit("answer", answer);
+  socket.on("offer", (offer, id, userid) => {
+    io.to(userid).emit("offer", offer, id);
   });
 
-  socket.on("ice-candidate", (candidate) => {
-    socket.broadcast.emit("ice-candidate", candidate);
+  socket.on("answer", (answer, id, userId) => {
+    io.to(userId).emit("answer", answer, id);
+  });
+
+  socket.on("candidate", (candidate, id, userid) => {
+    io.to(userid).emit("candidate", candidate, id);
+  });
+  socket.on("leave", (userId) => {
+    if (socket.roomId) {
+      io.to(socket.roomId).emit("user-disconnected", userId);
+      console.log(`User ${userId} left room ${socket.roomId}`);
+    }
+
+    socket.leave(socket.roomId); // Remove user from the room
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    if (socket.roomId) {
+      io.to(socket.roomId).emit("user-disconnected", socket.id);
+      console.log(`User ${socket.id} disconnected from ${socket.roomId}`);
+    }
   });
 });
 const PORT = process.env.PORT || 4000;

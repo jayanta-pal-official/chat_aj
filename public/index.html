@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Video Chat</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Video Chat App</h1>
-    <div class="video-container">
-        <video id="localVideo" autoplay playsinline muted></video>
-        <video id="remoteVideo" autoplay playsinline></video>
-    </div>
-    <button id="btn">start</button>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body class="bg-gray-900 text-white flex flex-col h-screen bg-white">
+    <div class="w-full bg-gray-800 p-4 text-center text-xl font-bold">
+      Multi-User Video Chat
+    </div>
+
+    <div class="flex flex-col items-center justify-center flex-grow">
+      <div id="video-grid" class="flex flex-wrap gap-4 py-5"></div>
+      <div class="mt-4 flex space-x-4">
+        <button id="muteButton" class="bg-blue-500 p-2 rounded-lg hidden">Mute</button>
+        <button id="videoButton" class="bg-blue-500 p-2 rounded-lg hidden">
+          Stop Video
+        </button>
+      </div>
+      <div class="flex gap-4 py-5">
+        <input type="text" id="input" class="py-2 px-1 border  text-black" placeholder="Enter Name">
+        <button id="btn" class="p-2 rounded bg-green-900 font-bold">
+          Start call
+        </button>
+        <button class="p-2 rounded bg-red-500 font-bold hidden" id="end">
+          End call
+        </button>
+      </div>
+    </div>
+
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
